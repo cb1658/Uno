@@ -10,7 +10,7 @@ public class Uno {
 	
 	public static void main(String[] args) {
 		
-		System.out.println("Welcome to Uno Banana Edition (TM)!");
+		System.out.println("Welcome to Uno Banana Edition (TM)! v0.2");
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
@@ -58,7 +58,7 @@ public class Uno {
 			topOnDeck = new Card(Card.colors[rand.nextInt(Card.colors.length)], Card.properties[rand.nextInt(Card.properties.length)], Card.nums[rand.nextInt(10)]);
 		}
 		else {
-			topOnDeck = new Card(Card.colors[rand.nextInt(Card.colors.length)], Card.nums[rand.nextInt(10)]);
+			topOnDeck = new Card(Card.colors[rand.nextInt(Card.colors.length)], Card.nums[rand.nextInt(Card.nums.length)]);
 		}
 		
 		for(Player p : players) {
@@ -78,7 +78,7 @@ public class Uno {
 		
 		////////// ABOVE IS FOR DEBUGGING PURPOSES
 		
-		GAME: while(true) {
+		while(true) {
 			
 			for(int i = 0; i < players.size(); i++) {
 				
@@ -91,10 +91,77 @@ public class Uno {
 				}
 				System.out.println("Player " + players.get(i).getName() + " ... here are your cards: " + players.get(i).printAllCards());
 				
-				System.out.println("Which one would you like to draw?");
-				sc.nextLine();
+				
+				
+				// GOING INTO "playCard" METHOD
+				
+				if(doesPlayerHaveAnyCardsThatMatchTopCard(topOnDeck, players.get(i))) {
+					Card cardToPlay;
+					do {
+
+						cardToPlay = getPlayerSelectedCard(sc, i);
+					}while(cardToPlay == null);
+				}else {
+					System.err.println("NO CARDS MATCH: AUTO DRAW ACTIVATED");
+					players.get(i).drawCard();
+				}
+				
+				// GOING INTO "playCard" METHOD
+				
+				
 			}
 		}
+	}
+	
+	public static Card getPlayerSelectedCard(Scanner sc, int i) {
+		System.out.println("Which one would you like to play?");
+		String input = sc.nextLine();
+		
+		String[] inputArr = input.split(" "); // CHECK LATER <----
+		
+		for(Card c : players.get(i).getCards()) {
+
+			try {
+				
+				if(c.isCardDescription(inputArr[0], Integer.parseInt(inputArr[1]))) {
+					
+					// ENTERED TEXT MATCHES CARD DESCRIPTION
+					// STUFF GOES HERE
+					System.err.println("Card detected! String, Integer"); //DEBUG
+					return c;
+					
+				}
+			}catch(Exception e) {
+				// NOTHING GOES HERE
+			}
+			
+			try {
+				if(c.isCardDescription(inputArr[0], inputArr[1])) {
+					
+					// ENTERED TEXT MATCHES CARD DESCRIPTION
+					// STUFF GOES HERE
+					System.err.println("Card detected! String, String"); //DEBUG
+					return c;
+					
+				}else {
+					return null;
+				}
+			}catch(Exception e) {
+				// NOTHING GOES HERE
+			}
+			
+		}
+		return null;
+	}
+	
+	public static boolean doesPlayerHaveAnyCardsThatMatchTopCard(Card topCard, Player p) {
+		for(Card card : p.getCards()) {
+			if(card.matches(topCard)) {
+				return true;
+			}
+		}
+		return false;
+		
 	}
 }
 
@@ -152,6 +219,13 @@ class Card{
 		else {
 			return false;
 		}
+	}
+	
+	public boolean isCardDescription(String color, int number) {
+		return (color.equals(this.color)) && (number == this.number);
+	}
+	public boolean isCardDescription(String property, String color) {
+		return (property.equals(this.property)) && (color.equals(this.color));
 	}
 }
 
