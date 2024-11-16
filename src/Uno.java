@@ -143,8 +143,6 @@ public class Uno {
 					System.err.println("Card detected! String, String"); //DEBUG
 					return c;
 					
-				}else {
-					return null;
 				}
 			}catch(Exception e) {
 				// NOTHING GOES HERE
@@ -171,15 +169,21 @@ class Card{
 	private final String property;
 	private final int number;
 	
-	public final static String[] properties = new String[]{"Wild 4 / NO COLOR", "Draw 2", "Draw 2", "Reverse", "Reverse", "Reverse", "Reverse"};
+	public final static String[] properties = new String[]{"Wild","Wild","Wild","Wild","Wild","Wild", "Draw 2", "Draw 2", "Reverse", "Reverse", "Reverse", "Reverse"};
 	public final static String[] colors = new String[] {"Red", "Yellow", "Green", "Blue"};
 	public final static int[] nums = new int[] {1,2,3,4,5,6,7,8,9};
 	
 	public Card(String color, String property, int number) {
 		super();
-		this.color = color;
+		
 		this.property = property;
 		this.number = number;
+		
+		if(this.property.equals("Wild")) {
+			this.color = "";
+		}else {
+			this.color = color;
+		}
 	}
 	public Card(String color, int number) {
 		super();
@@ -192,8 +196,8 @@ class Card{
 		if(this.getProperty() == "none") {
 			return " " + this.getColor() + " " + this.getNumber() + " ";
 		}
-		else if(this.getProperty() == "Wild 4 / NO COLOR") {
-			return " WILD 4 ";
+		else if(this.getProperty() == "Wild") {
+			return " WILD ";
 		}
 		else {
 			return " " + this.getProperty() + " " + this.getColor() + " "; 
@@ -227,6 +231,9 @@ class Card{
 	public boolean isCardDescription(String property, String color) {
 		return (property.equals(this.property)) && (color.equals(this.color));
 	}
+	public boolean isCardDescription(String property) {
+		return (property.equals(this.property)) && (property.equals("Wild"));
+	}
 }
 
 class Player{
@@ -259,8 +266,8 @@ class Player{
 		if(c.getProperty() == "none") {
 			return " " + c.getColor() + " " + c.getNumber() + " ";
 		}
-		else if(c.getProperty() == "Wild 4 / NO COLOR") {
-			return " WILD 4 ";
+		else if(c.getProperty() == "Wild") {
+			return "Wild";
 		}
 		else {
 			return " " + c.getProperty() + " " + c.getColor() + " "; 
